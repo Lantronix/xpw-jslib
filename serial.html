@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<head>
+	<script src="xpwLib.js"></script>
+</head>
+<body>
+<script>
+
+function clickColor(event)
+{
+	event = event || window.event; // handle IE issues
+	var target = event.target || event.srcElement; // more IE issues
+	var xmlhttp;
+	var lineSelect = document.getElementById("lineSelector");
+	
+	xpw.serialTransmit({line: lineSelect.options[lineSelect.selectedIndex].value,
+		message: target.style.getPropertyValue('background-color')+"\r\n"});
+}
+
+function updateData()
+{
+	var lineSelect = document.getElementById("lineSelector");
+	var textBox = document.getElementById("textBox");
+	
+	xpw.serialReceive( {line: lineSelect.options[lineSelect.selectedIndex].value,
+						done: function(data) {
+								if (data.success) {
+									textBox.innerHTML = textBox.innerHTML+data.message;
+								}
+								setTimeout(function(){updateData();}, 1000);
+							}
+						});
+}
+
+window.onload = function() { updateData(); };
+
+</script>
+<div style="float:left;width:50%;">
+	<h3 style="margin:auto;width:340px;">
+		Click a color to send it to serial port 
+		<select id="lineSelector">
+			<option>1</option>
+			<option>2</option>
+		</select>
+	</h3>
+	<div style="margin:auto;width:250px;">
+		<div style="background-color:aqua;" onclick="clickColor(event)">&nbsp</div>
+		<div style="background-color:black;" onclick="clickColor(event)">&nbsp</div>
+		<div style="background-color:blue;" onclick="clickColor(event)">&nbsp</div>
+		<div style="background-color:fuchsia;" onclick="clickColor(event)">&nbsp</div>
+		<div style="background-color:gray;" onclick="clickColor(event)">&nbsp</div>
+		<div style="background-color:green;" onclick="clickColor(event)">&nbsp</div>
+		<div style="background-color:lime;" onclick="clickColor(event)">&nbsp</div>
+		<div style="background-color:maroon;" onclick="clickColor(event)">&nbsp</div>
+		<div style="background-color:navy;" onclick="clickColor(event)">&nbsp</div>
+		<div style="background-color:olive;" onclick="clickColor(event)">&nbsp</div>
+		<div style="background-color:purple;" onclick="clickColor(event)">&nbsp</div>
+		<div style="background-color:red;" onclick="clickColor(event)">&nbsp</div>
+		<div style="background-color:silver;" onclick="clickColor(event)">&nbsp</div>
+		<div style="background-color:teal;" onclick="clickColor(event)">&nbsp</div>
+		<div style="background-color:white;" onclick="clickColor(event)">&nbsp</div>
+		<div style="background-color:yellow;" onclick="clickColor(event)">&nbsp</div>
+	</div>
+</div>
+<div style="float:left;width:50%;">
+	Data from the serial port (updated once per second):
+	<div style="color:white;background-color:gray;width=400px;height=400px;overflow:scroll;"
+		id="textBox">&nbsp</div>
+</div>
+
+</body>
