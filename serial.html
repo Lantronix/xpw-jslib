@@ -4,7 +4,6 @@
 </head>
 <body>
 <script>
-
 function clickColor(event)
 {
 	event = event || window.event; // handle IE issues
@@ -31,16 +30,60 @@ function updateData()
 						});
 }
 
-window.onload = function() { updateData(); };
+function updateConfig()
+{
+	var lineSelect = document.getElementById("lineSelector");
+	
+	xpw.getLineConfig({line:lineSelect.options[lineSelect.selectedIndex].value,
+				done: function(data) {
+					if (data.success) {
+						console.log(data.lineConfig);
+						document.getElementById("lineProtocol").innerHTML = data.lineConfig["Protocol"];
+						document.getElementById("lineBaudRate").innerHTML = data.lineConfig["Baud Rate"];
+						if(data.lineConfig.Protocol != "None") {
+							xpw.setLineConfig({line:lineSelect.options[lineSelect.selectedIndex].value,
+											items: {Protocol: "None"}, 
+											done: function(data) {
+												if(data.success)
+													updateConfig();
+											}
+											});
+						}
+					}
+				}
+				});
+}
+
+window.onload = function() { 
+		updateConfig();
+		updateData(); 
+	};
 
 </script>
-<div style="float:left;width:50%;">
-	<h3 style="margin:auto;width:340px;">
-		Click a color to send it to serial port 
-		<select id="lineSelector">
+<div style="margin:auto;width:800px;">
+Selecting a serial port will automatically change the Protocol to None to enable the WebToSerial function<br/>
+	<table style="margin:auto;width:400px">
+	<tr>
+		<th>Serial port</th>
+		<th>Protocol</th>
+		<th>Baud Rate</th>
+	</tr>
+	<tr>
+		<td>
+		<select id="lineSelector" onchange="updateConfig();">
 			<option>1</option>
 			<option>2</option>
 		</select>
+		</td>
+		<td id="lineProtocol"></td>
+		<td id="lineBaudRate"></td>
+	</tr>
+</table>
+</div>
+<hr />
+<div style="float:left;width:50%;">
+	<h3 style="margin:auto;width:340px;">
+		Click a color to send it to the serial port
 	</h3>
 	<div style="margin:auto;width:250px;">
 		<div style="background-color:aqua;" onclick="clickColor(event)">&nbsp</div>
