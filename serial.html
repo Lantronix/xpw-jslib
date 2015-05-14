@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <head>
-	<script src="xpwLib.js"></script>
+	<script src="xpwLib-0.1.min.js"></script>
 </head>
 <body>
 <script>
@@ -23,7 +23,7 @@ function updateData()
 	xpw.serialReceive( {line: lineSelect.options[lineSelect.selectedIndex].value,
 						done: function(data) {
 								if (data.success) {
-									textBox.innerHTML = textBox.innerHTML+data.message;
+									textBox.textContent = textBox.textContent+data.message;
 								}
 								setTimeout(function(){updateData();}, 1000);
 							}
@@ -38,8 +38,8 @@ function updateConfig()
 				done: function(data) {
 					if (data.success) {
 						console.log(data.lineConfig);
-						document.getElementById("lineProtocol").innerHTML = data.lineConfig["Protocol"];
-						document.getElementById("lineBaudRate").innerHTML = data.lineConfig["Baud Rate"];
+						document.getElementById("lineProtocol").textContent = data.lineConfig["Protocol"];
+						document.getElementById("lineBaudRate").textContent = data.lineConfig["Baud Rate"];
 						if(data.lineConfig.Protocol != "None") {
 							xpw.setLineConfig({line:lineSelect.options[lineSelect.selectedIndex].value,
 											items: {Protocol: "None"}, 
