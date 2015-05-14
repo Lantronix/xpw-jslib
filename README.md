@@ -1,3 +1,5 @@
+# xPico Wi-Fi WebAPI Javascript library
+
 ## Summary
 A Javascript library that makes it easy to use the xPico Wi-Fi's WebAPI to access the hardware features of the xPico Wi-Fi.
 For example, you can send and receive data from the serial ports, update configuration, and toggle GPIOs (future) with simple
