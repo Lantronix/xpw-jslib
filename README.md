@@ -11,8 +11,77 @@ the webpage. It has a sample of reading the configuration of the serial port and
 ## How-To
 
 Download the `xpwLib.js` file (or the minified version to save filesystem space). Add it to the header of your HTML file like this:
-```<script src="xpwLib.js"></script>```
+
+```
+<script src="xpwLib.js"></script>
+```
 
 This will load the `xpw` object which contains a number of functions to access the xPico Wi-Fi WebAPI.
 
 ## Available functions
+
+### Send data to the serial port
+
+```
+xpw.serialTransmit({
+		line: "1",		// could also be "2", if ommitted or some other value, defaults to "1"
+		message: "This will go out to the serial port\r\n",			// required
+		callback: function(data) {
+				// Do something, data is an object with a boolean called success:
+				// {success: true}
+			}
+		});
+```
+
+### Receive data from the serial port
+
+```
+xpw.serialReceive({
+		line: "1",		// could also be "2", if ommitted or some other value, defaults to "1"
+		done: function(data) {			// optional
+				// Do something, data is an object with the following:
+				// { success: true|false, message:The data that came from the serial port}
+			}
+	});
+```
+
+### Get serial port configuration
+
+```
+xpw.getLineConfig({
+		line: "1",		// could also be "2", if ommitted or some other value, defaults to "1"
+		done: function(data) {				// optional 
+				// Do something, data is an object with the following:
+				// { success: true|false, 
+				//   lineConfig: 			//    Another object with the serial port data, for example:
+				//  { 
+				//		Baud Rate: "115200 bits per second",
+				//		Data Bits: "8",
+				//		Flow Control: "None",
+				//		Gap Timer: "<Four Character Periods>",
+				//		Parity: "None",
+				//		Protocol: "None",
+				//		State: "Enabled",
+				//		Stop Bits: "1",
+				//		Threshold: "56 bytes"
+				//	}
+				// }
+			}
+	});
+```
+
+### Set serial port configuration
+
+```
+xpw.setLineConfig({
+		line: "1", 		// Must be "1" or "2"
+		items: {		// Required object with the properties that need to change, for example:
+					{ Protocol: "None",
+					  Baud Rate: "9600 bits per second"}	// Available items are the same as returned by the getLineConfig
+				},
+		done: function(data) {			// optional
+				// Do something, data is an object with the following:
+				// { success: true|false, message:The data that came from the serial port}
+			}		
+})
+```

@@ -25,8 +25,8 @@ window.xpw = (function () {
 				return;
 			var line = (args.line == '1' || args.line == '2') ? args.line : '1';
 			if (typeof args.message === "undefined") {
-				if (typeof args.callback !== "undefined")
-					args.callback({success: false,
+				if (typeof args.done !== "undefined")
+					args.done({success: false,
 								error: "No Message to send"});
 				return;
 			}
@@ -41,13 +41,13 @@ window.xpw = (function () {
 				postMsg += String(a2hex(args.message));	
 				var xmlhttp=new XMLHttpRequest();
 				
-				if (typeof args.callback !== "undefined")
+				if (typeof args.done !== "undefined")
 					xmlhttp.onreadystatechange=function() {
 						if (xmlhttp.readyState==4) 
 							if (xmlhttp.status==200)
-								args.callback({success:true});
+								args.done({success:true});
 							else
-								args.callback({success:false});
+								args.done({success:false});
 					}
 
 				xmlhttp.open("POST", "/action/status", true);					// This is the URL for Status Actions
