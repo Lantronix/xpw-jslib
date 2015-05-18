@@ -5,6 +5,8 @@ A Javascript library that makes it easy to use the xPico Wi-Fi's WebAPI to acces
 For example, you can send and receive data from the serial ports, update configuration, and toggle GPIOs (future) with simple
 calls. The library takes care of all the HTTP transactions and XML building and parsing for you.
 
+Please note, this library uses a new feature, Web to Serial, which is in Alpha on versions 1.4 of the xPico Wi-Fi. Please see the Lantronix wiki for more details: [http://wiki.lantronix.com/developer/XPicoWiFi/WebAPItoDevice]
+
 ## Samples
 ### serial.html 
 This file shows how to send data to the serial port by clicking on a color. It also reads data from the serial port and displays it on
