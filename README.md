@@ -8,19 +8,30 @@ calls. The library takes care of all the HTTP transactions and XML building and 
 Please note, this library uses a new feature, Web to Serial, which is in Alpha on versions 1.4 of the xPico Wi-Fi. Please see the Lantronix wiki for more details: http://wiki.lantronix.com/developer/XPicoWiFi/WebAPItoDevice
 
 ## Samples
-### serial.html 
+### serial.html
 This file shows how to send data to the serial port by clicking on a color. It also reads data from the serial port and displays it on
 the webpage. It has a sample of reading the configuration of the serial port and also setting the configuration of the serial port.
 
+### gpio.html
+This files shows how to read/write to the GPIO pins on the xPico Wi-Fi (also called CP for Configurable Pins). You can turn them to Input, Output, read	the current value, or set the output value.
+
 ## How-To
 
-Download the `xpwLib.js` file (or the minified version to save filesystem space). Add it to the header of your HTML file like this:
+Put the `xpwLib.js` file on the xPico Wi-Fi's filesystem, in the http/ directory (which you need to create). Add it to the header of your HTML file like this:
 
 ```
 <script src="xpwLib.js"></script>
 ```
 
 This will load the `xpw` object which contains a number of functions to access the xPico Wi-Fi WebAPI.
+
+If you would like to reduce the size that the library takes on the xPico Wi-Fi's filesystem, put the `xpwLib-0.2.min.js.gz` file in the filesystem instead (also in the http/ directory).
+
+Note that when adding a GZIP'ed file, you don't specify the .gz extension when you load it via the browser. The xPico Wi-Fi will automatically serve .gz files if the browser supports GZIP encoding (which all modern browsers do). So to include the library in your HTML file, you would add this to the header:
+
+```
+<script src="xpwLib-0.2.min.js"></script>
+```
 
 ## Available functions
 
@@ -54,11 +65,11 @@ xpw.serialReceive({
 ```
 xpw.getLineConfig({
 		line: "1",		// could also be "2", if ommitted or some other value, defaults to "1"
-		done: function(data) {				// optional 
+		done: function(data) {				// optional
 				// Do something, data is an object with the following:
-				// { success: true|false, 
+				// { success: true|false,
 				//   lineConfig: 			//    Another object with the serial port data, for example:
-				//  { 
+				//  {
 				//		Baud Rate: "115200 bits per second",
 				//		Data Bits: "8",
 				//		Flow Control: "None",
@@ -86,6 +97,39 @@ xpw.setLineConfig({
 		done: function(data) {			// optional
 				// Do something, data is an object with the following:
 				// { success: true|false, message:The data that came from the serial port}
-			}		
+			}
 })
+```
+
+### Get GPIO status
+
+```
+xpw.getGpioStatus({
+	done: function(data) {				// Optional
+				// Do something, data is an object with the following:
+				// { success: true|false,
+				//   status : [					// A list of objects for each GPIO line
+				//   	  { gpio: "1",			// GPIO number
+				//				isOutput: true|false,
+			  //				assertLow: true|false,
+				//				isAsserted: true|false,
+				//				enabled: true|false,
+				//			},
+				//		...]
+				//	}
+	}
+});
+```
+
+### Set GPIO
+
+```
+xpw.setGpio({
+	gpio: "1",			// Must be 1 through 8, for the specific CP pin
+	command: "disable",    // Can be: disable, input, output, assert, unassert
+	done: function(data) {
+			// Do something, data is an object with a boolean called success:
+			// {success: true}
+		}
+	})
 ```

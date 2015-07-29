@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <head>
-	<script src="xpwLib-0.1.min.js"></script>
+	<script src="xpwLib-0.2.min.js"></script>
 </head>
 <body>
 <script>
@@ -10,7 +10,7 @@ function clickColor(event)
 	var target = event.target || event.srcElement; // more IE issues
 	var xmlhttp;
 	var lineSelect = document.getElementById("lineSelector");
-	
+
 	xpw.serialTransmit({line: lineSelect.options[lineSelect.selectedIndex].value,
 		message: target.style.getPropertyValue('background-color')+"\r\n"});
 }
@@ -19,7 +19,7 @@ function updateData()
 {
 	var lineSelect = document.getElementById("lineSelector");
 	var textBox = document.getElementById("textBox");
-	
+
 	xpw.serialReceive( {line: lineSelect.options[lineSelect.selectedIndex].value,
 						done: function(data) {
 								if (data.success) {
@@ -33,7 +33,7 @@ function updateData()
 function updateConfig()
 {
 	var lineSelect = document.getElementById("lineSelector");
-	
+
 	xpw.getLineConfig({line:lineSelect.options[lineSelect.selectedIndex].value,
 				done: function(data) {
 					if (data.success) {
@@ -42,7 +42,7 @@ function updateConfig()
 						document.getElementById("lineBaudRate").textContent = data.lineConfig["Baud Rate"];
 						if(data.lineConfig.Protocol != "None") {
 							xpw.setLineConfig({line:lineSelect.options[lineSelect.selectedIndex].value,
-											items: {Protocol: "None"}, 
+											items: {Protocol: "None"},
 											done: function(data) {
 												if(data.success)
 													updateConfig();
@@ -54,9 +54,9 @@ function updateConfig()
 				});
 }
 
-window.onload = function() { 
+window.onload = function() {
 		updateConfig();
-		updateData(); 
+		updateData();
 	};
 
 </script>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<head>
+  <script src="xpwLib-0.2.min.js"></script>
+  <script>
+  function addBlock(gpio) {
+    var returnString = '<div style="float:left;border-style:solid;border-width:1;" id="gpioBlock'+gpio.gpio+'">'+
+    '<h3>CP'+gpio.gpio+'</h3>'+
+    '<table border="0" cellspacing="2">'+
+    '<tr>'+
+      '<td><h3>Type</h3></td>'+
+      '<td><h3>Value</h3></td>'+
+    '</tr>'+
+    '<tr>'+
+      '<td>'+
+        '<form>'+
+          '<input type="radio" onclick="updateCp(this.id)" name="gpioStatus"'+gpio.gpio+' id="input'+gpio.gpio+'" value="Input"/> Input<br>'+
+          '<input type="radio" onclick="updateCp(this.id)" name="gpioStatus"'+gpio.gpio+' id="output'+gpio.gpio+'" value="Output"/> Output<br>'+
+          '<input type="radio" onclick="updateCp(this.id)" name="gpioStatus"'+gpio.gpio+' id="disable'+gpio.gpio+'" value="Unused"/> Unused'+
+        '</form>'+
+      '</td>'+
+      '<td>'+
+        '<form>'+
+          '<input type="radio" onclick="updateCp(this.id)" name="gpioValue"'+gpio.gpio+' id="assert'+gpio.gpio+'" value="High"/> Asserted<br>'+
+          '<input type="radio" onclick="updateCp(this.id)" name="gpioValue"'+gpio.gpio+' id="unassert'+gpio.gpio+'" value="Low"/> Not asserted<br>'+
+          '<input type="radio" name="gpioValue"'+gpio.gpio+' id="gpioValue'+gpio.gpio+'" value="Unused"/> Unused'+
+        '</form>'+
+      '</td>'+
+    '</tr>'+
+  '</table>'+
+    '</div>';
+    return returnString;
+  }
+
+  function updateCp(obj) {
+    var args = {"gpio": obj.slice(-1),"command":obj.slice(0,-1)};
+    xpw.setGpio(args);
+    getGpioStatus();
+  }
+
+  function updateFields(data) {
+    for(var i=0;i<data.status.length;i++) {
+      document.getElementById("disable"+data.status[i].gpio).checked = !data.status[i].enabled;
+      document.getElementById("gpioValue"+data.status[i].gpio).checked = !data.status[i].enabled;
+      document.getElementById("gpioValue"+data.status[i].gpio).disabled = true;
+      document.getElementById("input"+data.status[i].gpio).checked = !data.status[i].isOuput && data.status[i].enabled;
+      document.getElementById("output"+data.status[i].gpio).checked = data.status[i].isOutput && data.status[i].enabled;
+      document.getElementById("assert"+data.status[i].gpio).checked = data.status[i].isAsserted && data.status[i].enabled;
+      document.getElementById("unassert"+data.status[i].gpio).checked = !data.status[i].isAsserted && data.status[i].enabled;
+      document.getElementById("assert"+data.status[i].gpio).disabled = !data.status[i].enabled || !data.status[i].isOutput;
+      document.getElementById("unassert"+data.status[i].gpio).disabled = !data.status[i].enabled || !data.status[i].isOutput;
+    }
+  }
+
+  function getGpioStatus() {
+    xpw.getGpioStatus({
+      done: function(data) {
+        if (data.success) {
+          for(var i=0;i<data.status.length;i++) {
+            if (document.getElementById("gpioBlock"+data.status[i].gpio) == null) {
+              document.getElementById("statusDisplay").innerHTML = document.getElementById("statusDisplay").innerHTML + addBlock(data.status[i]);
+            }
+          }
+          updateFields(data);
+        }
+      }
+    })
+  }
+  </script>
+</head>
+<body>
+  <div style="margin:auto;width:800px;">
+<input type="button" name="ReadConfig" value="Read Status" onclick=getGpioStatus() />
+  </div>
+  <div id="statusDisplay"></div>
+</body>
