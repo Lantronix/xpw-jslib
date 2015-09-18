@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<head>
+  <script src="xpwLib.js"></script>
+</head>
+<body>
+  <script>
+  function updateNetworkDisplay(network) {
+    var mainDiv = document.getElementById('n'+network.bssid);
+    mainDiv.getElementsByClassName("ssid")[0].innerHTML = network.ssid;
+    mainDiv.getElementsByClassName("flags")[0].innerHTML = network.flags;
+    mainDiv.getElementsByClassName("rssi")[0].innerHTML = network.rssi;
+  }
+  function createNetworkDisplay(network) {
+    var newDiv = document.createElement('div');
+    newDiv.id = 'n'+network.bssid;
+    var ssidDiv = document.createElement('div');
+    ssidDiv.className = "ssid";
+    newDiv.appendChild(ssidDiv);
+    var flagsDiv = document.createElement('div');
+    flagsDiv.className = "flags";
+    newDiv.appendChild(flagsDiv);
+    var rssiDiv = document.createElement('div');
+    rssiDiv.className = "rssi";
+    newDiv.appendChild(rssiDiv);
+    document.getElementById("networksHere").appendChild(newDiv);
+  }
+  function updateData() {
+    xpw.startScan();
+    setTimeout(function(){
+      xpw.getScanResults({ done: function(data) {
+            var networkNode = document.getElementById("networksHere");
+            while (networkNode.firstChild) {
+              networkNode.removeChild(networkNode.firstChild);
+            }
+            for(var i=0;i<data.networks.length;i++) {
+              createNetworkDisplay(data.networks[i]);
+              updateNetworkDisplay(data.networks[i]);
+            }
+          }
+        });
+      },2000);
+  }
+  </script>
+  <div id="networksHere"></div>
+  <input type="button" name="update" value="Update Networks" onclick=updateData() />
+</body>

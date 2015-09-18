@@ -261,6 +261,41 @@ window.xpw = (function () {
 			xmlhttp.open("POST", "/action/status", true);					// This is the URL for Status Actions
 			xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 			xmlhttp.send(postMsg);
+		},
+		startScan: function() {
+			var xmlhttp=new XMLHttpRequest();
+			xmlhttp.open("POST", "/", true);
+			xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+			xmlhttp.send("ajax=WLANScanSSID&ssid=&Scan=Scan&iehack=")
+		},
+		getScanResults: function(args) {
+			var xmlhttp=new XMLHttpRequest();
+
+			if (typeof args.done !== "undefined") {
+				xmlhttp.onreadystatechange=function() {
+						if (xmlhttp.readyState==4) {
+							if (xmlhttp.status==200) {
+								var data = [];
+								var xmlDoc=xmlhttp.responseXML;
+								var items = xmlDoc.getElementsByTagName("network");
+
+								for(var i=0;i<items.length;i++){
+									var network = {}
+									network["ssid"] = items[i].getElementsByTagName("ssid")[0].childNodes[0].nodeValue;
+									network["bssid"] = items[i].getElementsByTagName("bssid")[0].childNodes[0].nodeValue;
+									network["channel"] = items[i].getElementsByTagName("channel")[0].childNodes[0].nodeValue;
+									network["rssi"] = items[i].getElementsByTagName("rssi")[0].childNodes[0].nodeValue;
+									network["flags"] = items[i].getElementsByTagName("flags")[0].childNodes[0].nodeValue;
+									data.push(network);
+								}
+								args.done({networks:data});
+							}
+						}
+					}
+				}
+			var d = new Date();
+			xmlhttp.open("GET", "/ajax/quickconnect/results?"+d.getTime(), true);
+			xmlhttp.send();
 		}
 	};
 
