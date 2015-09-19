@@ -1,18 +1,31 @@
 <!DOCTYPE html>
 <head>
   <script src="xpwLib.js"></script>
+  <style>
+  .networkBlock {
+    float:left;
+    border-style:solid;
+    border-width:3px;
+    padding:10px;
+    margin:5px;
+    min-width: 300px;
+    min-height: 100px;
+  }
+  </style>
 </head>
 <body>
   <script>
   function updateNetworkDisplay(network) {
     var mainDiv = document.getElementById('n'+network.bssid);
-    mainDiv.getElementsByClassName("ssid")[0].innerHTML = network.ssid;
-    mainDiv.getElementsByClassName("flags")[0].innerHTML = network.flags;
-    mainDiv.getElementsByClassName("rssi")[0].innerHTML = network.rssi;
+    mainDiv.getElementsByClassName("ssid")[0].innerHTML = "SSID: "+network.ssid;
+    mainDiv.getElementsByClassName("flags")[0].innerHTML = "Security: "+network.flags;
+    mainDiv.getElementsByClassName("rssi")[0].innerHTML = "Signal Strength: "+network.rssi;
   }
   function createNetworkDisplay(network) {
     var newDiv = document.createElement('div');
     newDiv.id = 'n'+network.bssid;
+    newDiv.className = "networkBlock"
+    newDiv.onclick = function(){selectNetwork(network);};
     var ssidDiv = document.createElement('div');
     ssidDiv.className = "ssid";
     newDiv.appendChild(ssidDiv);
@@ -24,7 +37,27 @@
     newDiv.appendChild(rssiDiv);
     document.getElementById("networksHere").appendChild(newDiv);
   }
+  function selectNetwork(network) {
+    if (network.flags != "None") {
+      var passwd = window.prompt("Please enter the password for network "+network.ssid, "");
+      if (passwd == null) {
+        return;
+      }
+      if (~network.flags.indexOf('WPA') && (passwd.length < 8 || passwd.length > 64)) {
+        window.alert("WPA and WPA2 require a passphrase between 8 and 64 characters long.")
+        return
+      }
+      if (~network.flags.indexOf('WEP') && !(passwd.length == 10 || passwd.length == 26)) {
+        window.alert("WEP requires a hex key either 10 bytes or 26 bytes in length")
+        return
+      }
+      xpw.addWlanProfile(network, passwd);
+    } else {    // Network selected has no security
+      xpw.addWlanProfile(network, "");
+    }
+  }
   function updateData() {
+    document.getElementById("updateButton").style.visibility = 'hidden';
     xpw.startScan();
     setTimeout(function(){
       xpw.getScanResults({ done: function(data) {
@@ -36,11 +69,12 @@
               createNetworkDisplay(data.networks[i]);
               updateNetworkDisplay(data.networks[i]);
             }
+            document.getElementById("updateButton").style.visibility = 'visible';
           }
         });
       },2000);
   }
   </script>
-  <div id="networksHere"></div>
-  <input type="button" name="update" value="Update Networks" onclick=updateData() />
+  <div style="clear:both;" id="networksHere"></div>
+  <input id="updateButton" style="min-width:150px;height:50px;" type="button" name="update" value="Update Networks" onclick=updateData() />
 </body>
