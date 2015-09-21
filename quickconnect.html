@@ -54,9 +54,9 @@
         window.alert("WEP requires a hex key either 10 bytes or 26 bytes in length")
         return
       }
-      xpw.addWlanProfile(network, passwd);
+      xpw.addWlanProfile({network:network, password:passwd});
     } else {    // Network selected has no security
-      xpw.addWlanProfile(network, "");
+      xpw.addWlanProfile({network:network});
     }
   }
   function createProfileDisplay(profile) {
@@ -85,9 +85,6 @@
             document.getElementById("updateButton").style.visibility = 'visible';
           }
         });
-        xpw.getWlanProfiles({ done: function(data) {
-          console.log(data);
-        }})
       },2000);
   }
   function updateProfiles() {

@@ -19,6 +19,8 @@ window.xpw = (function () {
     return str;
 	}
 
+	var xmlHeader = "<?xml version=\"1.0\" standalone=\"yes\"?><!-- Automatically generated XML --><!DOCTYPE configrecord [  <!ELEMENT configrecord (configgroup+)><!ELEMENT configgroup (configitem+)><!ELEMENT configitem (value+)><!ELEMENT value (#PCDATA)><!ATTLIST configrecord version CDATA #IMPLIED><!ATTLIST configgroup name CDATA #IMPLIED><!ATTLIST configgroup instance CDATA #IMPLIED><!ATTLIST configitem name CDATA #IMPLIED><!ATTLIST configitem instance CDATA #IMPLIED><!ATTLIST value name CDATA #IMPLIED>]><configrecord version = \"0.1.0.1\">"
+
 	var xpw = {
 		serialTransmit: function (args) {
 			if (typeof args === "undefined")
@@ -135,7 +137,7 @@ window.xpw = (function () {
 			var line = (args.line == '1' || args.line == '2') ? args.line : '1';
 			var xmlhttp=new XMLHttpRequest();
 
-			var postMsg = "<?xml version=\"1.0\" standalone=\"yes\"?><!-- Automatically generated XML --><!DOCTYPE configrecord [  <!ELEMENT configrecord (configgroup+)><!ELEMENT configgroup (configitem+)><!ELEMENT configitem (value+)><!ELEMENT value (#PCDATA)><!ATTLIST configrecord version CDATA #IMPLIED><!ATTLIST configgroup name CDATA #IMPLIED><!ATTLIST configgroup instance CDATA #IMPLIED><!ATTLIST configitem name CDATA #IMPLIED><!ATTLIST configitem instance CDATA #IMPLIED><!ATTLIST value name CDATA #IMPLIED>]><configrecord version = \"0.1.0.1\"><configgroup name = \"Line\" instance = \""+line+"\">";
+			var postMsg = xmlHeader+"<configgroup name = \"Line\" instance = \""+line+"\">";
 
 			for(var name in args.items) {
 				postMsg += "<configitem name = \""+name+"\"><value>"+args.items[name]+"</value></configitem>";
@@ -326,6 +328,39 @@ window.xpw = (function () {
 			xmlhttp.open("POST", "/export/config", true);					// This is the URL for Status Actions
 			xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 			xmlhttp.send("optionalGroupList=WLAN Profile");
+		},
+		addWlanProfile: function(args) {
+			if (typeof args === "undefined")
+				return;
+			var postMsg = xmlHeader+"<configgroup name=\"WLAN Profile\" instance=\""+args.network.ssid+"\">";
+			postMsg+="<configitem name =\"Basic\"><value name=\"Network Name\">"+args.network.ssid+"</value><value name=\"State\">Enabled</value></configitem><configitem name = \"Security\">";
+			if (~args.network.flags.indexOf('WPA2')) {
+				postMsg+="<value name = \"Suite\">WPA2</value><value name = \"WPAx Key Type\">Passphrase</value><value name = \"WPAx Passphrase\">"+args.password+"</value><value name = \"WPAx Encryption\">";
+				if (~args.network.flags.indexOf('CCMP')) {
+					postMsg+="CCMP</value>";
+				} else {
+					postMsg+="TKIP</value>";
+				}
+			} else if (~args.network.flags.indexOf('WPA')) {
+				postMsg+="<value name = \"Suite\">WPA</value><value name = \"WPAx Key Type\">Passphrase</value><value name = \"WPAx Passphrase\">"+args.password+"</value><value name = \"WPAx Encryption\">TKIP</value>";
+			} else if (~args.network.flags.indexOf('WEP')) {
+				postMsg+="<value name = \"Suite\">WEP</value><value name = \"WEP Key Size\">";
+				if (args.password.length == 10) {
+					postMsg+="40";
+				} else {
+					postMsg+="128";
+				}
+				postMsg+="</value><value name = \"WEP TX Key Index\">1</value><value name = \"WEP Key 1 Key\">"+args.password+"</value>";
+			} else {
+				postMsg+="<value name = \"Suite\">None</value>";
+			}
+			postMsg+="</configitem></configgroup></configrecord>";
+			var xmlhttp=new XMLHttpRequest();
+			var fd = new FormData();
+			fd.append("configrecord", postMsg);
+
+			xmlhttp.open("POST", "/import/config", true);
+			xmlhttp.send(fd);
 		}
 	};
 
