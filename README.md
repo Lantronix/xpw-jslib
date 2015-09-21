@@ -15,6 +15,9 @@ the webpage. It has a sample of reading the configuration of the serial port and
 ### gpio.html
 This files shows how to read/write to the GPIO pins on the xPico Wi-Fi (also called CP for Configurable Pins). You can turn them to Input, Output, read	the current value, or set the output value.
 
+### quickconnect.html
+This file shows how to create your own custom QuickConnect web page. This is useful if you want to present the user a page for provisioning WLAN Profiles either on the same page as the rest of your page, or if you want to change the CSS significantly, for example to make it more mobile-friendly.
+
 ## How-To
 
 Put the `xpwLib.js` file on the xPico Wi-Fi's filesystem, in the http/ directory (which you need to create). Add it to the header of your HTML file like this:
@@ -175,7 +178,7 @@ xpw.getWlanProfiles({
 		//   }
 	}
 	});
-	```
+```
 
 ### Add a new WLAN Profile
 
