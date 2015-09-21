@@ -7,6 +7,9 @@ calls. The library takes care of all the HTTP transactions and XML building and 
 
 Please note, this library uses a new feature, Web to Serial, which is in Alpha on versions 1.4 of the xPico Wi-Fi. Please see the Lantronix wiki for more details: http://wiki.lantronix.com/developer/XPicoWiFi/WebAPItoDevice
 
+See the section on adding your own webpages to learn how to load custom web pages onto the xPico Wi-Fi's filesystem:
+http://wiki.lantronix.com/developer/XPicoWiFi/CustomizeWebPages#Creating_your_own_webpages
+
 ## Samples
 ### serial.html
 This file shows how to send data to the serial port by clicking on a color. It also reads data from the serial port and displays it on
