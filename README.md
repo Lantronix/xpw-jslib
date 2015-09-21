@@ -103,7 +103,7 @@ xpw.setLineConfig({
 				// Do something, data is an object with the following:
 				// { success: true|false, message:The data that came from the serial port}
 			}
-})
+});
 ```
 
 ### Get GPIO status
@@ -136,13 +136,13 @@ xpw.setGpio({
 			// Do something, data is an object with a boolean called success:
 			// {success: true}
 		}
-	})
+	});
 ```
 
 ### Start a scan of Wi-Fi networks
 
 ```
-xpw.startScan()
+xpw.startScan();
 ```
 
 ### Retrieve the results from the last scan
@@ -189,7 +189,7 @@ xpw.addWlanProfile({
 	password:  // A string with the WPA2/WPA passphrase or WEP Hex key (10 or 26
 						 // characters). Not needed if there is no security
 	done:			 // A function to be called when configuration is done
-	})
+	});
 ```
 
 ### Delete WLAN Profile
@@ -199,5 +199,5 @@ xpw.addWlanProfile({
 	profile:   // Must be a profile object with the same properties as returned
 						 // by getWlanProfiles
 	done:			 // A function to be called when configuration is done
-	})
+	});
 ```

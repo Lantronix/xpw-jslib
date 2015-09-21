@@ -56,7 +56,7 @@
       }
       xpw.addWlanProfile({network:network, password:passwd,done:function(data) {updateProfiles();} });
     } else {    // Network selected has no security
-      xpw.addWlanProfile({network:network});
+      xpw.addWlanProfile({network:network,done:function(data) {updateProfiles();}});
     }
   }
   function createProfileDisplay(profile) {
@@ -71,8 +71,7 @@
     document.getElementById("profilesHere").appendChild(newDiv);
   }
   function selectProfile(profile) {
-    //var yes = window.confirm("Are you sure you want to delete profile "+profile.name+"?");
-    var yes = window.confirm("Are you sure you want to delete all profiles?");
+    var yes = window.confirm("Are you sure you want to delete profile "+profile.name+"?");
     if (yes) {
       xpw.deleteWlanProfile({profile: profile, done: function(data) {updateProfiles();}});
     }

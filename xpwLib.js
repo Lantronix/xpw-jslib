@@ -380,10 +380,8 @@ window.xpw = (function () {
 		deleteWlanProfile: function(args) {
 			if (typeof args === "undefined")
 				return;
-			//var postMsg = xmlHeader+"<configgroup name = \"XML Import Control\"><configitem name = \"WLAN Profile delete\"><value>";
-			var postMsg = xmlHeader+"<configgroup name = \"XML Import Control\"><configitem name = \"Delete WLAN Profiles\"><value>";
-			//postMsg+=args.profile.name+"</value></configitem></configgroup></configrecord>";
-			postMsg+="Enabled</value></configitem></configgroup></configrecord>";
+			var postMsg = xmlHeader+"<configgroup name = \"XML Import Control\"><configitem name = \"WLAN Profile delete\"><value name=\"name\">";
+			postMsg+=args.profile.name+"</value></configitem></configgroup></configrecord>";
 			var xmlhttp=new XMLHttpRequest();
 			var fd = new FormData();
 			fd.append("configrecord", postMsg);
