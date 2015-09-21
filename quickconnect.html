@@ -54,7 +54,7 @@
         window.alert("WEP requires a hex key either 10 bytes or 26 bytes in length")
         return
       }
-      xpw.addWlanProfile({network:network, password:passwd});
+      xpw.addWlanProfile({network:network, password:passwd,done:function(data) {updateProfiles();} });
     } else {    // Network selected has no security
       xpw.addWlanProfile({network:network});
     }
@@ -69,6 +69,13 @@
     nameDiv.innerHTML = "Profile name: "+profile.name;
     newDiv.appendChild(nameDiv);
     document.getElementById("profilesHere").appendChild(newDiv);
+  }
+  function selectProfile(profile) {
+    //var yes = window.confirm("Are you sure you want to delete profile "+profile.name+"?");
+    var yes = window.confirm("Are you sure you want to delete all profiles?");
+    if (yes) {
+      xpw.deleteWlanProfile({profile: profile, done: function(data) {updateProfiles();}});
+    }
   }
   function updateData() {
     document.getElementById("updateButton").style.visibility = 'hidden';

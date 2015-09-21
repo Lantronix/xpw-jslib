@@ -25,12 +25,14 @@ Put the `xpwLib.js` file on the xPico Wi-Fi's filesystem, in the http/ directory
 
 This will load the `xpw` object which contains a number of functions to access the xPico Wi-Fi WebAPI.
 
-If you would like to reduce the size that the library takes on the xPico Wi-Fi's filesystem, put the `xpwLib-0.2.min.js.gz` file in the filesystem instead (also in the http/ directory).
+If you would like to reduce the size that the library takes on the xPico Wi-Fi's filesystem, you should minify and gzip the library. To minify it, you can use any of a number of tools. We have used http://jscompress.com with good results. Then use gzip to create a .gz file.
+
+ Place the `xpwLib.min.js.gz` (or whatever you called it) file in the filesystem instead (also in the http/ directory).
 
 Note that when adding a GZIP'ed file, you don't specify the .gz extension when you load it via the browser. The xPico Wi-Fi will automatically serve .gz files if the browser supports GZIP encoding (which all modern browsers do). So to include the library in your HTML file, you would add this to the header:
 
 ```
-<script src="xpwLib-0.2.min.js"></script>
+<script src="xpwLib.min.js"></script>
 ```
 
 ## Available functions
@@ -131,5 +133,68 @@ xpw.setGpio({
 			// Do something, data is an object with a boolean called success:
 			// {success: true}
 		}
+	})
+```
+
+### Start a scan of Wi-Fi networks
+
+```
+xpw.startScan()
+```
+
+### Retrieve the results from the last scan
+
+```
+xpw.getScanResults({
+	done: function(data) {
+		// Data is an object that contains:
+		//  { success: true|false,
+		//    networks: [  	// A list of objects for each access point scanned
+		//			{ ssid: "ssid",		// The SSID of the network
+		//        bssid: "bssid",	// The BSSID of the access point
+		//				channel: "1",		// The Wi-Fi channel used
+		//				rssi: "-50dB",	// The RSSI of this signal
+		//				flags: "WPA2-CCMP"   // A string that shows the security of the network
+		//		   },
+		//     ...]
+		//   }
+	}
+	});
+```
+
+### Retrieve the WLAN Profiles stored in configuration
+
+```
+xpw.getWlanProfiles({
+	done: function(data) {
+		// Data is an object that contains:
+		//  { success: true|false,
+		//    profiles: [  	// A list of objects for each access point scanned
+		//			{ name: "name" },		// The name of the profile
+		//     ...]
+		//   }
+	}
+	});
+	```
+
+### Add a new WLAN Profile
+
+```
+xpw.addWlanProfile({
+	network:   // Must be a network object with the same properties as returned
+						 // by getScanResults
+	password:  // A string with the WPA2/WPA passphrase or WEP Hex key (10 or 26
+						 // characters). Not needed if there is no security
+	done:			 // A function to be called when configuration is done
+	})
+```
+
+### Delete WLAN Profile
+
+```
+xpw.addWlanProfile({
+	profile:   // Must be a profile object with the same properties as returned
+						 // by getWlanProfiles
+	done:			 // A function to be called when configuration is done
 	})
 ```

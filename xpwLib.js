@@ -310,6 +310,10 @@ window.xpw = (function () {
 						if (xmlhttp.status==200) {
 							var data = [];
 							var xmlDoc=xmlhttp.responseXML;
+							if (xmlDoc == null) {
+								args.done({success:false, profiles: []});
+								return;
+							}
 							var items = xmlDoc.getElementsByTagName("configgroup");
 
 							for(var i=0;i<items.length;i++){
@@ -319,7 +323,7 @@ window.xpw = (function () {
 							}
 							args.done({success:true, profiles:data})
 						} else {
-							args.done({success:false});
+							args.done({success:false, profiles: []});
 						}
 					}
 				}
@@ -348,7 +352,7 @@ window.xpw = (function () {
 				if (args.password.length == 10) {
 					postMsg+="40";
 				} else {
-					postMsg+="128";
+					postMsg+="104";
 				}
 				postMsg+="</value><value name = \"WEP TX Key Index\">1</value><value name = \"WEP Key 1 Key\">"+args.password+"</value>";
 			} else {
@@ -358,6 +362,43 @@ window.xpw = (function () {
 			var xmlhttp=new XMLHttpRequest();
 			var fd = new FormData();
 			fd.append("configrecord", postMsg);
+			if (typeof args.done !== "undefined") {
+				xmlhttp.onreadystatechange=function() {
+					if (xmlhttp.readyState==4) {
+						if (xmlhttp.status==200) {
+							args.done({success:true})
+						} else {
+							args.done({success:false});
+						}
+					}
+				}
+			}
+
+			xmlhttp.open("POST", "/import/config", true);
+			xmlhttp.send(fd);
+		},
+		deleteWlanProfile: function(args) {
+			if (typeof args === "undefined")
+				return;
+			//var postMsg = xmlHeader+"<configgroup name = \"XML Import Control\"><configitem name = \"WLAN Profile delete\"><value>";
+			var postMsg = xmlHeader+"<configgroup name = \"XML Import Control\"><configitem name = \"Delete WLAN Profiles\"><value>";
+			//postMsg+=args.profile.name+"</value></configitem></configgroup></configrecord>";
+			postMsg+="Enabled</value></configitem></configgroup></configrecord>";
+			var xmlhttp=new XMLHttpRequest();
+			var fd = new FormData();
+			fd.append("configrecord", postMsg);
+
+			if (typeof args.done !== "undefined") {
+				xmlhttp.onreadystatechange=function() {
+					if (xmlhttp.readyState==4) {
+						if (xmlhttp.status==200) {
+							args.done({success:true})
+						} else {
+							args.done({success:false});
+						}
+					}
+				}
+			}
 
 			xmlhttp.open("POST", "/import/config", true);
 			xmlhttp.send(fd);
