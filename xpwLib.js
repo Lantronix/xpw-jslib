@@ -288,7 +288,9 @@ window.xpw = (function () {
 									network["flags"] = items[i].getElementsByTagName("flags")[0].childNodes[0].nodeValue;
 									data.push(network);
 								}
-								args.done({networks:data});
+								args.done({success:true, networks:data});
+							} else {
+								args.done({success:false});
 							}
 						}
 					}
@@ -296,6 +298,34 @@ window.xpw = (function () {
 			var d = new Date();
 			xmlhttp.open("GET", "/ajax/quickconnect/results?"+d.getTime(), true);
 			xmlhttp.send();
+		},
+		getWlanProfiles: function(args) {
+			var xmlhttp=new XMLHttpRequest();
+
+			if (typeof args.done !== "undefined") {
+				xmlhttp.onreadystatechange=function() {
+					if (xmlhttp.readyState==4) {
+						if (xmlhttp.status==200) {
+							var data = [];
+							var xmlDoc=xmlhttp.responseXML;
+							var items = xmlDoc.getElementsByTagName("configgroup");
+
+							for(var i=0;i<items.length;i++){
+								var profile = {}
+								profile["name"] = items[i].getAttribute("instance");
+								data.push(profile);
+							}
+							args.done({success:true, profiles:data})
+						} else {
+							args.done({success:false});
+						}
+					}
+				}
+			}
+
+			xmlhttp.open("POST", "/export/config", true);					// This is the URL for Status Actions
+			xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+			xmlhttp.send("optionalGroupList=WLAN Profile");
 		}
 	};
 

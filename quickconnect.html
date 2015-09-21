@@ -2,7 +2,7 @@
 <head>
   <script src="xpwLib.js"></script>
   <style>
-  .networkBlock {
+  .networkBlock, .profileBlock {
     float:left;
     border-style:solid;
     border-width:3px;
@@ -11,16 +11,16 @@
     min-width: 300px;
     min-height: 100px;
   }
+  .clearfix:after {
+   content: " ";
+   display: block;
+   height: 0;
+   clear: both;
+  }
   </style>
 </head>
 <body>
   <script>
-  function updateNetworkDisplay(network) {
-    var mainDiv = document.getElementById('n'+network.bssid);
-    mainDiv.getElementsByClassName("ssid")[0].innerHTML = "SSID: "+network.ssid;
-    mainDiv.getElementsByClassName("flags")[0].innerHTML = "Security: "+network.flags;
-    mainDiv.getElementsByClassName("rssi")[0].innerHTML = "Signal Strength: "+network.rssi;
-  }
   function createNetworkDisplay(network) {
     var newDiv = document.createElement('div');
     newDiv.id = 'n'+network.bssid;
@@ -28,12 +28,15 @@
     newDiv.onclick = function(){selectNetwork(network);};
     var ssidDiv = document.createElement('div');
     ssidDiv.className = "ssid";
+    ssidDiv.innerHTML = "SSID: "+network.ssid;
     newDiv.appendChild(ssidDiv);
     var flagsDiv = document.createElement('div');
     flagsDiv.className = "flags";
+    flagsDiv.innerHTML = "Security: "+network.flags;
     newDiv.appendChild(flagsDiv);
     var rssiDiv = document.createElement('div');
     rssiDiv.className = "rssi";
+    rssiDiv.innerHTML = "Signal Strength: "+network.rssi;
     newDiv.appendChild(rssiDiv);
     document.getElementById("networksHere").appendChild(newDiv);
   }
@@ -56,6 +59,17 @@
       xpw.addWlanProfile(network, "");
     }
   }
+  function createProfileDisplay(profile) {
+    var newDiv = document.createElement('div');
+    newDiv.id = 'p'+profile.bssid;
+    newDiv.className = "profileBlock"
+    newDiv.onclick = function(){selectProfile(profile);};
+    var nameDiv = document.createElement('div');
+    nameDiv.className = "name";
+    nameDiv.innerHTML = "Profile name: "+profile.name;
+    newDiv.appendChild(nameDiv);
+    document.getElementById("profilesHere").appendChild(newDiv);
+  }
   function updateData() {
     document.getElementById("updateButton").style.visibility = 'hidden';
     xpw.startScan();
@@ -67,14 +81,33 @@
             }
             for(var i=0;i<data.networks.length;i++) {
               createNetworkDisplay(data.networks[i]);
-              updateNetworkDisplay(data.networks[i]);
             }
             document.getElementById("updateButton").style.visibility = 'visible';
           }
         });
+        xpw.getWlanProfiles({ done: function(data) {
+          console.log(data);
+        }})
       },2000);
   }
+  function updateProfiles() {
+    document.getElementById("updateProfiles").style.visibility = 'hidden';
+    xpw.getWlanProfiles({ done: function(data) {
+      var networkNode = document.getElementById("profilesHere");
+      while (networkNode.firstChild) {
+        networkNode.removeChild(networkNode.firstChild);
+      }
+      for(var i=0;i<data.profiles.length;i++) {
+        createProfileDisplay(data.profiles[i]);
+      }
+      document.getElementById("updateProfiles").style.visibility = 'visible';
+    }})
+  }
   </script>
-  <div style="clear:both;" id="networksHere"></div>
+  <div id="networksHere" class="clearfix"></div>
+  <br />
   <input id="updateButton" style="min-width:150px;height:50px;" type="button" name="update" value="Update Networks" onclick=updateData() />
+  <div id="profilesHere" class="clearfix"></div>
+  <br />
+  <input id="updateProfiles" style="min-width:150px;height:50px;" type="button" value="Update Profiles" onclick=updateProfiles() />
 </body>
