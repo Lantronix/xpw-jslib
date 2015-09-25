@@ -15,11 +15,17 @@ http://wiki.lantronix.com/developer/XPicoWiFi/CustomizeWebPages#Creating_your_ow
 This file shows how to send data to the serial port by clicking on a color. It also reads data from the serial port and displays it on
 the webpage. It has a sample of reading the configuration of the serial port and also setting the configuration of the serial port.
 
+![Serial screenshot](/screenshots/serial.jpg?raw=true)
+
 ### gpio.html
 This files shows how to read/write to the GPIO pins on the xPico Wi-Fi (also called CP for Configurable Pins). You can turn them to Input, Output, read	the current value, or set the output value.
 
+![GPIO screenshot](/screenshots/gpio.jpg?raw=true)
+
 ### quickconnect.html
 This file shows how to create your own custom QuickConnect web page. This is useful if you want to present the user a page for provisioning WLAN Profiles either on the same page as the rest of your page, or if you want to change the CSS significantly, for example to make it more mobile-friendly.
+
+![QuickConnect screenshot](/screenshots/quickconnect.png?raw=true)
 
 ## How-To
 
