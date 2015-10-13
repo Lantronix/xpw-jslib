@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<head>
+	<script src="xpwLib.js"></script>
+</head>
+<body>
+<script>
+checkBoxes = function() {
+		document.getElementById("charsText").disabled = !document.getElementById("chars").checked;
+		document.getElementById("msText").disabled = !document.getElementById("ms").checked;
+		document.getElementById("termText").disabled = !document.getElementById("term").checked;
+}
+
+sendData = function() {
+		var obj = {message: document.getElementById("toSend").value, line: "1" };
+		if (document.getElementById("chars").checked)
+			obj.n = document.getElementById("charsText").value;
+		if (document.getElementById("ms").checked)
+			obj.m = document.getElementById("msText").value;
+		if (document.getElementById("term").checked)
+			obj.t = document.getElementById("termText").value;
+		obj.done = function(data) {
+			if (data.success) {
+				document.getElementById("textBox").textContent = data.message;
+			}
+		}
+		xpw.serialTransact(obj);
+}
+
+window.onload = function() {
+	checkBoxes();
+}
+</script>
+<div>
+	To send to serial port: <input type="text" id="toSend"><br>
+	<input type="checkbox" id="chars" onclick="checkBoxes()"><input type="text" id="charsText" size="3"> Number of characters to wait for (unlimited if omitted)<br>
+	<input type="checkbox" id="ms" onclick="checkBoxes()"><input type="text" id="msText" size="5"> Number of milliseconds to wait for response (1000 if omitted) <br>
+	<input type="checkbox" id="term" onclick="checkBoxes()"><input type="text" id="termText" maxlength="2" size="2"> Terminating character in Hex (e.g 0D for carriage return) (none if omitted)<br>
+	<button onclick="sendData()">Send</button><br>
+	<p>
+	Data from the serial port:
+	<div style="color:white;background-color:gray;width=400px;height=400px;overflow:scroll;"
+		id="textBox">&nbsp</div>
+</div>
+
+</body>

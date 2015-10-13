@@ -97,6 +97,64 @@ window.xpw = (function () {
 			xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 			xmlhttp.send(postMsg);
 		},
+		serialTransact: function(args) {
+			if (typeof args === "undefined")
+				return;
+			var line = (args.line == '1' || args.line == '2') ? args.line : '1';
+			if (typeof args.message === "undefined") {
+				if (typeof args.done !== "undefined")
+					args.done({success: false, error: "No Message to send"});
+				return;
+			} else {
+				// Setup the status action with group=Line
+				var postMsg = "group=Line&optionalGroupInstance=";
+				// Here we add the optionalGroupInstance which is 1 or 2 (the Line)
+				postMsg += line;
+				// We're going to transmit in hex, note the space after Hex Transmit!
+				postMsg +="&action=Command ";
+				if (typeof args.n !== "undefined") {
+					postMsg +="n="+args.n+" ";
+				}
+				if (typeof args.m !== "undefined") {
+					postMsg +="m="+args.m+" ";
+				}
+				if (typeof args.t !== "undefined") {
+					postMsg +="t="+args.t+" ";
+				}
+				// After the space we add the string we want to send (in hex)
+				postMsg += String(a2hex(args.message));
+				var xmlhttp=new XMLHttpRequest();
+
+				if (typeof args.done !== "undefined")
+					xmlhttp.onreadystatechange=function() {
+						if (xmlhttp.readyState==4) {
+							if (xmlhttp.status==200) {
+								var xmlDoc=xmlhttp.responseXML;
+								var message = xmlDoc.getElementsByTagName("message");
+								var result = xmlDoc.getElementsByTagName("result");
+
+								if(result[0].childNodes[0].nodeValue=="Succeeded") {
+									var textIn = "";
+									if(message[0] && message[0].childNodes.length >0) {
+										textIn = message[0].childNodes[0].nodeValue;
+										textIn = textIn.replace(/\s+/g,'');
+										textIn = hex2a(textIn);
+									}
+									args.done({success:true, message:textIn});
+								} else {
+									args.done({success:false});
+								}
+							} else {
+								args.done({success:false});
+							}
+						}
+					}
+
+				xmlhttp.open("POST", "/action/status", true);					// This is the URL for Status Actions
+				xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+				xmlhttp.send(postMsg);											// Send!
+			}
+		},
 		getLineConfig: function(args) {
 			if (typeof args === "undefined")
 				return;

@@ -17,6 +17,13 @@ the webpage. It has a sample of reading the configuration of the serial port and
 
 ![Serial screenshot](/screenshots/serial.jpg?raw=true)
 
+### chat.html
+This file shows how to send and receive data to the serial port in a single transaction. This uses the new "Command" feature in firmware version 1.4.0.0R21 or later.
+
+The reason to use this instead of the separate Transmit and Receive from the previous example is to make sure that the same client sending data receives a response.
+
+![Chat screenshot](/screenshots/chat.png?raw=true)
+
 ### gpio.html
 This files shows how to read/write to the GPIO pins on the xPico Wi-Fi (also called CP for Configurable Pins). You can turn them to Input, Output, read	the current value, or set the output value.
 
@@ -73,6 +80,25 @@ xpw.serialReceive({
 			}
 	});
 ```
+
+### Make a send/receive transaction to the serial port
+
+```
+xpw.serialTransact({
+		line: "1",		// could also be "2", if ommitted or some other value, defaults to "1"
+		message: "This will go out to the serial port\r\n",			// required
+		n: "10",		// Optional, number of characters to wait for (default unlimited)
+		m: "1000",		// Optional, number of milliseconds to wait for (default 1000)
+		t: "0D",		// Optional, terminating character in Hex (0D for carriage return) (default None)
+		done: function(data) {			// optional
+				// Do something, data is an object with the following:
+				// { success: true|false, message:The data that came from the serial port}
+			}
+	});
+```
+
+Uses feature new to firmware 1.4.0.0R21 or newer. See information here:
+http://wiki.lantronix.com/developer/XPicoWiFi/WebAPItoDevice#Sending_and_receiving_in_one_transaction
 
 ### Get serial port configuration
 
