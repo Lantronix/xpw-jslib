@@ -230,7 +230,7 @@ xpw.addWlanProfile({
 ### Delete WLAN Profile
 
 ```
-xpw.addWlanProfile({
+xpw.deleteWlanProfile({
 	profile:   // Must be a profile object with the same properties as returned
 						 // by getWlanProfiles
 	done:			 // A function to be called when configuration is done
