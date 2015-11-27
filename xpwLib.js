@@ -19,6 +19,19 @@ window.xpw = (function () {
     return str;
 	}
 
+	function unescapeHTML(html) {
+		var htmlNode = document.createElement("div");
+  	htmlNode.innerHTML = html;
+  	if(htmlNode.innerText)
+    	return htmlNode.innerText; // IE
+  	else
+    	return htmlNode.textContent;
+	}
+
+	function escapeXML(str) {
+		return str.replace(/&/g,'&#38;').replace(/</g,'&#60;').replace(/>/g,'&#62;');
+	}
+
 	var xmlHeader = "<?xml version=\"1.0\" standalone=\"yes\"?><!-- Automatically generated XML --><!DOCTYPE configrecord [  <!ELEMENT configrecord (configgroup+)><!ELEMENT configgroup (configitem+)><!ELEMENT configitem (value+)><!ELEMENT value (#PCDATA)><!ATTLIST configrecord version CDATA #IMPLIED><!ATTLIST configgroup name CDATA #IMPLIED><!ATTLIST configgroup instance CDATA #IMPLIED><!ATTLIST configitem name CDATA #IMPLIED><!ATTLIST configitem instance CDATA #IMPLIED><!ATTLIST value name CDATA #IMPLIED>]><configrecord version = \"0.1.0.1\">"
 
 	var xpw = {
@@ -395,7 +408,7 @@ window.xpw = (function () {
 			if (typeof args === "undefined")
 				return;
 			var postMsg = xmlHeader+"<configgroup name=\"WLAN Profile\" instance=\""+args.network.ssid+"\">";
-			postMsg+="<configitem name =\"Basic\"><value name=\"Network Name\">"+args.network.ssid+"</value><value name=\"State\">Enabled</value></configitem><configitem name = \"Security\">";
+			postMsg+="<configitem name =\"Basic\"><value name=\"Network Name\">"+unescapeHTML(args.network.ssid)+"</value><value name=\"State\">Enabled</value></configitem><configitem name = \"Security\">";
 			if (~args.network.flags.indexOf('WPA2')) {
 				postMsg+="<value name = \"Suite\">WPA2</value><value name = \"WPAx Key Type\">Passphrase</value><value name = \"WPAx Passphrase\">"+args.password+"</value><value name = \"WPAx Encryption\">";
 				if (~args.network.flags.indexOf('CCMP')) {
@@ -439,7 +452,7 @@ window.xpw = (function () {
 			if (typeof args === "undefined")
 				return;
 			var postMsg = xmlHeader+"<configgroup name = \"XML Import Control\"><configitem name = \"WLAN Profile delete\"><value name=\"name\">";
-			postMsg+=args.profile.name+"</value></configitem></configgroup></configrecord>";
+			postMsg+=escapeXML(args.profile.name)+"</value></configitem></configgroup></configrecord>";
 			var xmlhttp=new XMLHttpRequest();
 			var fd = new FormData();
 			fd.append("configrecord", postMsg);
