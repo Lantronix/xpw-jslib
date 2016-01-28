@@ -166,7 +166,7 @@ xpw.getGpioStatus({
 ```
 xpw.setGpio({
 	gpio: "1",			// Must be 1 through 8, for the specific CP pin
-	command: "disable",    // Can be: disable, input, output, assert, unassert
+	command: "disable",    // Can be: disable, input, output, assert, unassert, assertHigh, assertLow
 	done: function(data) {
 			// Do something, data is an object with a boolean called success:
 			// {success: true}

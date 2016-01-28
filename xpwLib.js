@@ -306,7 +306,13 @@ window.xpw = (function () {
 					postMsg += "Value 1";
 					break;
 				case "unassert":
-					postMsg += "value 0";
+					postMsg += "Value 0";
+					break;
+				case "assertHigh":
+					postMsg += "Assert High";
+					break;
+				case "assertLow":
+					postMsg += "Assert Low";
 					break;
 			}
 
