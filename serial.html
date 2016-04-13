@@ -11,7 +11,7 @@ function clickColor(event)
 	var xmlhttp;
 	var lineSelect = document.getElementById("lineSelector");
 
-	xpw.serialTransmit({line: lineSelect.options[lineSelect.selectedIndex].value,
+	xpw.serialTransmit({line: lineSelect.value,
 		message: target.style.getPropertyValue('background-color')+"\r\n"});
 }
 
@@ -20,7 +20,7 @@ function updateData()
 	var lineSelect = document.getElementById("lineSelector");
 	var textBox = document.getElementById("textBox");
 
-	xpw.serialReceive( {line: lineSelect.options[lineSelect.selectedIndex].value,
+	xpw.serialReceive( {line: lineSelect.value,
 						done: function(data) {
 								if (data.success) {
 									textBox.textContent = textBox.textContent+data.message;
@@ -34,14 +34,14 @@ function updateConfig()
 {
 	var lineSelect = document.getElementById("lineSelector");
 
-	xpw.getLineConfig({line:lineSelect.options[lineSelect.selectedIndex].value,
+	xpw.getLineConfig({line:lineSelect.value,
 				done: function(data) {
 					if (data.success) {
 						console.log(data.lineConfig);
 						document.getElementById("lineProtocol").textContent = data.lineConfig["Protocol"];
 						document.getElementById("lineBaudRate").textContent = data.lineConfig["Baud Rate"];
 						if(data.lineConfig.Protocol != "None") {
-							xpw.setLineConfig({line:lineSelect.options[lineSelect.selectedIndex].value,
+							xpw.setLineConfig({line:lineSelect.value,
 											items: {Protocol: "None"},
 											done: function(data) {
 												if(data.success)
@@ -73,6 +73,7 @@ Selecting a serial port will automatically change the Protocol to None to enable
 		<select id="lineSelector" onchange="updateConfig();">
 			<option>1</option>
 			<option>2</option>
+			<option>CDC_ACM</option>
 		</select>
 		</td>
 		<td id="lineProtocol"></td>

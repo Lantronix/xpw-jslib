@@ -60,7 +60,8 @@ Note that when adding a GZIP'ed file, you don't specify the .gz extension when y
 
 ```
 xpw.serialTransmit({
-		line: "1",		// could also be "2", if ommitted or some other value, defaults to "1"
+		line: "1",		// could also be "2" or "CDC_ACM" (new 1.5 firmware), if ommitted or some other value,
+                  // defaults to "1"
 		message: "This will go out to the serial port\r\n",			// required
 		callback: function(data) {
 				// Do something, data is an object with a boolean called success:
@@ -73,7 +74,8 @@ xpw.serialTransmit({
 
 ```
 xpw.serialReceive({
-		line: "1",		// could also be "2", if ommitted or some other value, defaults to "1"
+		line: "1",		// could also be "2" or "CDC_ACM" (new 1.5 firmware), if ommitted or some other value,
+                  // defaults to "1"
 		done: function(data) {			// optional
 				// Do something, data is an object with the following:
 				// { success: true|false, message:The data that came from the serial port}
@@ -85,7 +87,8 @@ xpw.serialReceive({
 
 ```
 xpw.serialTransact({
-		line: "1",		// could also be "2", if ommitted or some other value, defaults to "1"
+		line: "1",		// could also be "2" or "CDC_ACM" (new 1.5 firmware), if ommitted or some other value,
+                  // defaults to "1"
 		message: "This will go out to the serial port\r\n",			// required
 		n: "10",		// Optional, number of characters to wait for (default unlimited)
 		m: "1000",		// Optional, number of milliseconds to wait for (default 1000)
@@ -104,7 +107,8 @@ http://wiki.lantronix.com/developer/XPicoWiFi/WebAPItoDevice#Sending_and_receivi
 
 ```
 xpw.getLineConfig({
-		line: "1",		// could also be "2", if ommitted or some other value, defaults to "1"
+		line: "1",		// could also be "2" or "CDC_ACM" (new 1.5 firmware), if ommitted or some other value,
+                  // defaults to "1"
 		done: function(data) {				// optional
 				// Do something, data is an object with the following:
 				// { success: true|false,
@@ -129,7 +133,7 @@ xpw.getLineConfig({
 
 ```
 xpw.setLineConfig({
-		line: "1", 		// Must be "1" or "2"
+		line: "1", 		// Must be "1", "2" or "CDC_ACM" (new 1.5 firmware)
 		items: {		// Required object with the properties that need to change, for example:
 					{ Protocol: "None",
 					  Baud Rate: "9600 bits per second"}	// Available items are the same as returned by the getLineConfig

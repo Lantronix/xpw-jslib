@@ -38,7 +38,7 @@ window.xpw = (function () {
 		serialTransmit: function (args) {
 			if (typeof args === "undefined")
 				return;
-			var line = (args.line == '1' || args.line == '2') ? args.line : '1';
+			var line = (args.line == '1' || args.line == '2' || args.line == 'CDC_ACM') ? args.line : '1';
 			if (typeof args.message === "undefined") {
 				if (typeof args.done !== "undefined")
 					args.done({success: false,
@@ -73,7 +73,7 @@ window.xpw = (function () {
 		serialReceive: function (args) {
 			if (typeof args === "undefined")
 				return;
-			var line = (args.line == '1' || args.line == '2') ? args.line : '1';
+			var line = (args.line == '1' || args.line == '2' || args.line == 'CDC_ACM') ? args.line : '1';
 			var postMsg = "group=Line&optionalGroupInstance=";
 			postMsg += line;
 			postMsg += "&optionalItem=Receiver&action=Hex Receive";
@@ -113,7 +113,7 @@ window.xpw = (function () {
 		serialTransact: function(args) {
 			if (typeof args === "undefined")
 				return;
-			var line = (args.line == '1' || args.line == '2') ? args.line : '1';
+			var line = (args.line == '1' || args.line == '2' || args.line == 'CDC_ACM') ? args.line : '1';
 			if (typeof args.message === "undefined") {
 				if (typeof args.done !== "undefined")
 					args.done({success: false, error: "No Message to send"});
@@ -171,7 +171,7 @@ window.xpw = (function () {
 		getLineConfig: function(args) {
 			if (typeof args === "undefined")
 				return;
-			var line = (args.line == '1' || args.line == '2') ? args.line : '1';
+			var line = (args.line == '1' || args.line == '2' || args.line == 'CDC_ACM') ? args.line : '1';
 			var xmlhttp=new XMLHttpRequest();
 
 			if (typeof args.done !== "undefined") {
@@ -205,7 +205,7 @@ window.xpw = (function () {
 		setLineConfig: function(args) {
 			if (typeof args === "undefined" || typeof args.line === "undefined" || typeof args.items === "undefined")
 				return;
-			var line = (args.line == '1' || args.line == '2') ? args.line : '1';
+			var line = (args.line == '1' || args.line == '2' || args.line == 'CDC_ACM') ? args.line : '1';
 			var xmlhttp=new XMLHttpRequest();
 
 			var postMsg = xmlHeader+"<configgroup name = \"Line\" instance = \""+line+"\">";
