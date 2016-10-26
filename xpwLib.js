@@ -266,6 +266,9 @@ window.xpw = (function () {
 											case "Value":
 												config["isAsserted"] = val == "1";
 												break;
+											case "Mode":
+											  config["pullup"] = val == "Weak Pullup";
+												break;
 										}
 									}
 								}
@@ -313,6 +316,12 @@ window.xpw = (function () {
 					break;
 				case "assertLow":
 					postMsg += "Assert Low";
+					break;
+				case "push-pull":
+					postMsg += "Mode Push-Pull";
+					break;
+				case "pullup":
+					postMsg += "Mode Weak Pullup";
 					break;
 			}
 

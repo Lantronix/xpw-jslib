@@ -155,9 +155,10 @@ xpw.getGpioStatus({
 				//   status : [					// A list of objects for each GPIO line
 				//   	  { gpio: "1",			// GPIO number
 				//				isOutput: true|false,
-			  //				assertLow: true|false,
+        //				assertLow: true|false,
 				//				isAsserted: true|false,
 				//				enabled: true|false,
+        //        pullup: true|false,  // if false, CP is set to push-pull
 				//			},
 				//		...]
 				//	}
@@ -170,7 +171,7 @@ xpw.getGpioStatus({
 ```
 xpw.setGpio({
 	gpio: "1",			// Must be 1 through 8, for the specific CP pin
-	command: "disable",    // Can be: disable, input, output, assert, unassert, assertHigh, assertLow
+	command: "disable",    // Can be: disable, input, output, assert, unassert, assertHigh, assertLow, pullup, push-pull
 	done: function(data) {
 			// Do something, data is an object with a boolean called success:
 			// {success: true}
