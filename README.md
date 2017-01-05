@@ -63,7 +63,7 @@ xpw.serialTransmit({
 		line: "1",		// could also be "2" or "CDC_ACM" (new 1.5 firmware), if ommitted or some other value,
                   // defaults to "1"
 		message: "This will go out to the serial port\r\n",			// required
-		callback: function(data) {
+		done: function(data) {
 				// Do something, data is an object with a boolean called success:
 				// {success: true}
 			}
