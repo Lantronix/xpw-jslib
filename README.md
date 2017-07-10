@@ -62,6 +62,7 @@ Note that when adding a GZIP'ed file, you don't specify the .gz extension when y
 xpw.serialTransmit({
 		line: "1",		// could also be "2" or "CDC_ACM" (new 1.5 firmware), if ommitted or some other value,
                   // defaults to "1"
+		async: false // If omitted defaults to true
 		message: "This will go out to the serial port\r\n",			// required
 		done: function(data) {
 				// Do something, data is an object with a boolean called success:
@@ -76,6 +77,7 @@ xpw.serialTransmit({
 xpw.serialReceive({
 		line: "1",		// could also be "2" or "CDC_ACM" (new 1.5 firmware), if ommitted or some other value,
                   // defaults to "1"
+		async: false // If omitted defaults to true
 		done: function(data) {			// optional
 				// Do something, data is an object with the following:
 				// { success: true|false, message:The data that came from the serial port}
@@ -89,6 +91,7 @@ xpw.serialReceive({
 xpw.serialTransact({
 		line: "1",		// could also be "2" or "CDC_ACM" (new 1.5 firmware), if ommitted or some other value,
                   // defaults to "1"
+		async: false // Optional, send request asynchronously (default true)
 		message: "This will go out to the serial port\r\n",			// required
 		n: "10",		// Optional, number of characters to wait for (default unlimited)
 		m: "1000",		// Optional, number of milliseconds to wait for (default 1000)
