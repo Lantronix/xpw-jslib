@@ -21,6 +21,7 @@ function updateData()
 	var textBox = document.getElementById("textBox");
 
 	xpw.serialReceive( {line: lineSelect.value,
+                        async: false,
 						done: function(data) {
 								if (data.success) {
 									textBox.textContent = textBox.textContent+data.message;

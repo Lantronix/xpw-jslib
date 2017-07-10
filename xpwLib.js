@@ -39,6 +39,7 @@ window.xpw = (function () {
 			if (typeof args === "undefined")
 				return;
 			var line = (args.line == '1' || args.line == '2' || args.line == 'CDC_ACM') ? args.line : '1';
+			var async = (typeof args.async !== "undefined") ? args.async : true;
 			if (typeof args.message === "undefined") {
 				if (typeof args.done !== "undefined")
 					args.done({success: false,
@@ -65,7 +66,7 @@ window.xpw = (function () {
 								args.done({success:false});
 					}
 
-				xmlhttp.open("POST", "/action/status", true);					// This is the URL for Status Actions
+				xmlhttp.open("POST", "/action/status", async);					// This is the URL for Status Actions
 				xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 				xmlhttp.send(postMsg);											// Send!
 			}
@@ -74,6 +75,7 @@ window.xpw = (function () {
 			if (typeof args === "undefined")
 				return;
 			var line = (args.line == '1' || args.line == '2' || args.line == 'CDC_ACM') ? args.line : '1';
+			var async = (typeof args.async !== "undefined") ? args.async : true;
 			var postMsg = "group=Line&optionalGroupInstance=";
 			postMsg += line;
 			postMsg += "&optionalItem=Receiver&action=Hex Receive";
@@ -106,7 +108,7 @@ window.xpw = (function () {
 				}
 			}
 
-			xmlhttp.open("POST", "/action/status", true);					// This is the URL for Status Actions
+			xmlhttp.open("POST", "/action/status", async);					// This is the URL for Status Actions
 			xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 			xmlhttp.send(postMsg);
 		},
@@ -114,6 +116,7 @@ window.xpw = (function () {
 			if (typeof args === "undefined")
 				return;
 			var line = (args.line == '1' || args.line == '2' || args.line == 'CDC_ACM') ? args.line : '1';
+			var async = (typeof args.async !== "undefined") ? args.async : true;
 			if (typeof args.message === "undefined") {
 				if (typeof args.done !== "undefined")
 					args.done({success: false, error: "No Message to send"});
@@ -163,7 +166,7 @@ window.xpw = (function () {
 						}
 					}
 
-				xmlhttp.open("POST", "/action/status", true);					// This is the URL for Status Actions
+				xmlhttp.open("POST", "/action/status", async);					// This is the URL for Status Actions
 				xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 				xmlhttp.send(postMsg);											// Send!
 			}
