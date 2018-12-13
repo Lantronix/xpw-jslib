@@ -183,7 +183,7 @@ xpw.setGpio({
 ```
 
 ### Scan for Wi-Fi networks
-**This function works with xPico 200 firmware 2.0.0.4 and newer**
+**This function works with xPico 200 firmware 2.0.0.4 and newer, and with xPico Wi-Fi**
 ```
 xpw.doWlanScan({
 	done: function(data) {
