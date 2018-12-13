@@ -34,6 +34,8 @@ window.xpw = (function () {
 
 	var xmlHeader = "<?xml version=\"1.0\" standalone=\"yes\"?><!-- Automatically generated XML --><!DOCTYPE configrecord [  <!ELEMENT configrecord (configgroup+)><!ELEMENT configgroup (configitem+)><!ELEMENT configitem (value+)><!ELEMENT value (#PCDATA)><!ATTLIST configrecord version CDATA #IMPLIED><!ATTLIST configgroup name CDATA #IMPLIED><!ATTLIST configgroup instance CDATA #IMPLIED><!ATTLIST configitem name CDATA #IMPLIED><!ATTLIST configitem instance CDATA #IMPLIED><!ATTLIST value name CDATA #IMPLIED>]><configrecord version = \"0.1.0.1\">"
 
+	var xpwType = "Unknown";
+
 	var xpw = {
 		serialTransmit: function (args) {
 			if (typeof args === "undefined")
@@ -353,12 +355,97 @@ window.xpw = (function () {
 			xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 			xmlhttp.send(postMsg);
 		},
+		doWlanScan: function(args) {
+			if (xpwType == "Unknown") {
+				var xmlhttp=new XMLHttpRequest();
+				xmlhttp.onreadystatechange=function() {
+					if (xmlhttp.readyState==4) {
+						if (xmlhttp.status==200) {
+							var xmlDoc=xmlhttp.responseXML;
+							var items = xmlDoc.getElementsByTagName("statusitem");
+							for(var i=0;i<items.length;i++){
+								if(items[i].getAttribute("name") == "Product Type") {
+									xpwType = items[i].getElementsByTagName("value")[0].childNodes[0].nodeValue;
+									xpw.doWlanScan(args);
+								}
+							}
+						} else {
+							if (typeof args.done !== "undefined") {
+								args.done({success:false});
+							}
+						}
+					}
+				}
+				xmlhttp.open("POST","/export/status", true);
+				xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+				xmlhttp.send("optionalGroupList=Device");
+			} else if (xpwType == "xPico240" || xpwType == "xPico250") {
+				xpw.xpw200WlanScan(args);
+			} else if (xpwType == "xPicoWifi") {
+				xpw.startScan();
+				setTimeout(function() {xpw.getScanResults(args);},2000);
+			}
+		},
+		xpw200WlanScan: function(args) {
+			var xmlhttp=new XMLHttpRequest();
+
+			if (typeof args.done !== "undefined") {
+				xmlhttp.onreadystatechange=function() {
+					if (xmlhttp.readyState==4) {
+						if (xmlhttp.status==200) {
+							var data = [];
+							var xmlDoc=xmlhttp.responseXML;
+							var items = xmlDoc.getElementsByTagName("statusitem");
+							for(var i=0;i<items.length;i++) {
+								if(items[i].getAttribute("name") == "Response") {
+									var network = {};
+									var values = items[i].getElementsByTagName("value");
+									for(var j=0;j<values.length;j++) {
+										switch (values[j].getAttribute("name")) {
+											case "SSID":
+												network["ssid"] = values[j].childNodes[0].nodeValue;
+												break;
+											case "BSSID":
+												network["bssid"] = values[j].childNodes[0].nodeValue;
+												break;
+											case "Channel":
+												network["channel"] = values[j].childNodes[0].nodeValue;
+												break;
+											case "RSSI":
+												network["rssi"] = values[j].childNodes[0].nodeValue;
+												break;
+											case "Security Suite":
+												network["flags"] = values[j].childNodes[0].nodeValue;
+												break;
+											case "Is Active":
+												network["active"] = (values[j].childNodes[0].nodeValue == "Yes");
+											default:
+												break;
+										};
+									};
+									data.push(network);
+								}
+							}
+							args.done({success:true, networks:data});
+						} else {
+							args.done({success:false});
+						}
+					}
+				}
+			}
+
+			xmlhttp.open("POST", "/action/status", true);
+			xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+			xmlhttp.send("group=WLAN&optionalGroupInstance=wlan0&action=Broadcast Scan");
+		},
+		// startScan will be deprecated in the future, should use doWlanScan
 		startScan: function() {
 			var xmlhttp=new XMLHttpRequest();
 			xmlhttp.open("POST", "/", true);
 			xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 			xmlhttp.send("ajax=WLANScanSSID&ssid=&Scan=Scan&iehack=")
 		},
+		// getScanResults will be deprecated in the future, should use doWlanScan
 		getScanResults: function(args) {
 			var xmlhttp=new XMLHttpRequest();
 

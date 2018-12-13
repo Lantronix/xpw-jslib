@@ -38,6 +38,11 @@
     rssiDiv.className = "rssi";
     rssiDiv.innerHTML = "Signal Strength: "+network.rssi;
     newDiv.appendChild(rssiDiv);
+    if(network.active) {
+      var connectedDiv = document.createElement('div');
+      connectedDiv.innerHTML = "CONNECTED";
+      newDiv.appendChild(connectedDiv);
+    }
     document.getElementById("networksHere").appendChild(newDiv);
   }
   function selectNetwork(network) {
@@ -78,9 +83,7 @@
   }
   function updateData() {
     document.getElementById("updateButton").style.visibility = 'hidden';
-    xpw.startScan();
-    setTimeout(function(){
-      xpw.getScanResults({ done: function(data) {
+      xpw.doWlanScan({ done: function(data) {
             var networkNode = document.getElementById("networksHere");
             while (networkNode.firstChild) {
               networkNode.removeChild(networkNode.firstChild);
@@ -91,7 +94,6 @@
             document.getElementById("updateButton").style.visibility = 'visible';
           }
         });
-      },2000);
   }
   function updateProfiles() {
     document.getElementById("updateProfiles").style.visibility = 'hidden';
