@@ -182,13 +182,36 @@ xpw.setGpio({
 	});
 ```
 
+### Scan for Wi-Fi networks
+**This function works with xPico 200 firmware 2.0.0.4 and newer**
+```
+xpw.doWlanScan({
+	done: function(data) {
+		// Data is an object that contains:
+		//  { success: true|false,
+		//    networks: [  	// A list of objects for each access point scanned
+		//			{ ssid: "ssid",		// The SSID of the network
+		//        bssid: "bssid",	// The BSSID of the access point
+		//				channel: "1",		// The Wi-Fi channel used
+		//				rssi: "-50dB",	// The RSSI of this signal
+		//				flags: "WPA2-CCMP",   // A string that shows the security of the network
+		//				active: false  		// A boolean on whether the xPico200 device is connected to this network
+		//		   },
+		//     ...]
+		//   }
+	}
+	});
+```
+
 ### Start a scan of Wi-Fi networks
+**This function will be deprecated in future versions of xPico 200 firmware, to move to the doWlanScan() function. It will remain for xPico Wi-Fi.**
 
 ```
 xpw.startScan();
 ```
 
 ### Retrieve the results from the last scan
+**This function will be deprecated in future versions of xPico 200 firmware, to move to the doWlanScan() function. It will remain for xPico Wi-Fi.**
 
 ```
 xpw.getScanResults({
