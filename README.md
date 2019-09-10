@@ -1,4 +1,4 @@
-# xPico Wi-Fi WebAPI Javascript library
+# xPico 200, XPort EDGE, and xPico Wi-Fi WebAPI Javascript library
 
 ## Summary
 A Javascript library that makes it easy to use the xPico Wi-Fi's WebAPI to access the hardware features of the xPico Wi-Fi.
