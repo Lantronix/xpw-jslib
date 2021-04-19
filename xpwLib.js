@@ -379,7 +379,7 @@ window.xpw = (function () {
 				xmlhttp.open("POST","/export/status", true);
 				xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 				xmlhttp.send("optionalGroupList=Device");
-			} else if (xpwType == "xPico240" || xpwType == "xPico250") {
+			} else if (xpwType == "xPico240" || xpwType == "xPico250" || xpwType == "xPico270") {
 				xpw.xpw200WlanScan(args);
 			} else if (xpwType == "xPicoWifi") {
 				xpw.startScan();
